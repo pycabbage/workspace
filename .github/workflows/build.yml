@@ -59,9 +59,10 @@ jobs:
       - name: Debug#2
         run: |
           echo "Metadata: ${{ steps.push.outputs.metadata }}"
-      # - name: Attest build provenance
-      #   uses: actions/attest-build-provenance@v3
-      #   with:
-      #     subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      #     subject-digest: $ { { steps.push.outputs.digest }}
-      #     push-to-registry: true
+          echo "Digest: ${{ fromJSON(steps.push.outputs.metadata).default['containerimage.digest'] }}"
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          subject-digest: ${{ fromJSON(steps.push.outputs.metadata).default['containerimage.digest'] }}
+          push-to-registry: true
