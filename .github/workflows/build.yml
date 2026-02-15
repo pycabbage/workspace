@@ -27,6 +27,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=${{ github.event_name != 'pull_request' }}
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
@@ -40,7 +42,7 @@ jobs:
       - name: Debug#1
         run: |
           echo "Bake file:"
-          cat ${{ steps.meta.outputs.bake-file }}
+          jq . ${{ steps.meta.outputs.bake-file }}
       - name: Build and push
         uses: docker/bake-action@v6
         id: push
