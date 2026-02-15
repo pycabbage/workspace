@@ -41,12 +41,13 @@ jobs:
         uses: docker/bake-action@v6
         id: push
         with:
+          files: |
+            docker-bake.hcl
+            cwd://${{ steps.meta.outputs.bake-file }}
           targets: default
           push: ${{ github.event_name != 'pull_request' }}
           provenance: true
           set: |
-            default.tags=${{ steps.meta.outputs.tags }}
-            default.labels=${{ steps.meta.outputs.labels }}
             default.cache-from=type=gha
             default.cache-to=type=gha,mode=max
       - name: Debug
