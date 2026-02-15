@@ -41,6 +41,7 @@ jobs:
         uses: docker/bake-action@v6
         id: push
         with:
+          targets: default
           push: ${{ github.event_name != 'pull_request' }}
           provenance: true
           set: |
