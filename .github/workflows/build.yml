@@ -15,6 +15,7 @@ jobs:
       contents: read
       packages: write
       id-token: write
+      attestations: write
 
     env:
       REGISTRY: ghcr.io
@@ -39,10 +40,6 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Debug#1
-        run: |
-          echo "Bake file:"
-          jq . ${{ steps.meta.outputs.bake-file }}
       - name: Build and push
         uses: docker/bake-action@v6
         id: push
@@ -56,10 +53,6 @@ jobs:
           set: |
             default.cache-from=type=gha
             default.cache-to=type=gha,mode=max
-      - name: Debug#2
-        run: |
-          echo "Metadata: ${{ steps.push.outputs.metadata }}"
-          echo "Digest: ${{ fromJSON(steps.push.outputs.metadata).default['containerimage.digest'] }}"
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v3
         with:
