@@ -9,5 +9,6 @@ target "default" {
     NONROOT_GID: "1000",
     NODEJS_VERSION: "latest",
     PYTHON_VERSION: "latest",
+    GOLANG_VERSION: "latest",
   }
 }

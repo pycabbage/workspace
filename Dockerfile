@@ -1,3 +1,5 @@
+ARG TARGETARCH
+
 ARG NONROOT_USER=ubuntu
 ARG NONROOT_GROUP=ubuntu
 ARG NONROOT_UID=1000
@@ -5,8 +7,11 @@ ARG NONROOT_GID=1000
 
 ARG NODEJS_VERSION=latest
 ARG PYTHON_VERSION=latest
+ARG GOLANG_VERSION=latest
 
 FROM ubuntu:26.04
+
+ARG TARGETARCH
 
 RUN \
   --mount=source=scripts.d/000-base-dependencies.sh,target=/scripts.d/000-base-dependencies.sh,ro \
@@ -37,6 +42,14 @@ RUN \
 RUN \
   --mount=source=scripts.d/052-bun.sh,target=/scripts.d/052-bun.sh,ro \
   /scripts.d/052-bun.sh
+RUN \
+  --mount=source=scripts.d/053-rust.sh,target=/scripts.d/053-rust.sh,ro \
+  /scripts.d/053-rust.sh
+USER root
+ARG GOLANG_VERSION
+RUN \
+  --mount=source=scripts.d/054-golang.sh,target=/scripts.d/054-golang.sh,ro \
+  /scripts.d/054-golang.sh
 
 USER ${NONROOT_USER}
 WORKDIR /home/${NONROOT_USER}
