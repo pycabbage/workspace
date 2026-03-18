@@ -3,6 +3,8 @@ name: Build and Push
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "*.md"
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -55,6 +57,7 @@ jobs:
             default.cache-to=type=gha,mode=max
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v3
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ fromJSON(steps.push.outputs.metadata).default['containerimage.digest'] }}
