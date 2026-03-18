@@ -67,7 +67,7 @@ curl -sLo "/tmp/${FILENAME}" "$URL"
 tar -C /usr/local -xzf "/tmp/${FILENAME}"
 rm "/tmp/${FILENAME}"
 
-cat <<EOF > /etc/bash.bashrc
+cat <<EOF >> /etc/bash.bashrc
 
 export PATH="/usr/local/go/bin:\$PATH"
 EOF

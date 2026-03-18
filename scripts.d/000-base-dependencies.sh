@@ -15,7 +15,8 @@ apt-get install -y --no-install-recommends \
   ubuntu-server-minimal \
   ubuntu-minimal \
   ubuntu-standard \
-  unzip
+  unzip \
+  curl
 
 apt-get remove -y --no-install-recommends unminimize
 apt-get autoremove -y

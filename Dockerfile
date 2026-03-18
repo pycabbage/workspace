@@ -9,7 +9,7 @@ ARG NODEJS_VERSION=latest
 ARG PYTHON_VERSION=latest
 ARG GOLANG_VERSION=latest
 
-FROM ubuntu:26.04
+FROM ubuntu:25.10
 
 ARG TARGETARCH
 
@@ -50,6 +50,13 @@ ARG GOLANG_VERSION
 RUN \
   --mount=source=scripts.d/054-golang.sh,target=/scripts.d/054-golang.sh,ro \
   /scripts.d/054-golang.sh
+RUN \
+  --mount=source=scripts.d/055-docker-dood.sh,target=/scripts.d/055-docker-dood.sh,ro \
+  --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  mv /etc/apt/apt.conf.d/docker-clean /tmp/docker-clean && echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache && \
+  /scripts.d/055-docker-dood.sh && \
+  mv /tmp/docker-clean /etc/apt/apt.conf.d/docker-clean && rm -f /etc/apt/apt.conf.d/keep-cache
 
 USER ${NONROOT_USER}
 WORKDIR /home/${NONROOT_USER}
