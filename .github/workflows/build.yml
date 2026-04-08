@@ -84,6 +84,6 @@ jobs:
             -e LANG \
             $BAKE_ENV \
             -v /var/run/docker.sock:/var/run/docker.sock \
-            -v ./scripts.d/99-test.sh:/opt/test.sh:ro \
+            -v ./scripts.d/099-test.sh:/opt/test.sh:ro \
             ${{ steps.meta.outputs.tags[0] }} \
             /opt/test.sh
