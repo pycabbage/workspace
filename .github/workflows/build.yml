@@ -8,6 +8,8 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
 
 jobs:
   build:
@@ -56,9 +58,32 @@ jobs:
             default.cache-from=type=gha
             default.cache-to=type=gha,mode=max
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v4
+        uses: actions/attest@v4
         if: ${{ github.event_name != 'pull_request' }}
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ fromJSON(steps.push.outputs.metadata).default['containerimage.digest'] }}
           push-to-registry: true
+      - name: Test image
+        run: |
+          BAKE_ENV="$(
+            docker run \
+              -it --rm \
+              -v ./docker-bake.hcl:/tmp/docker-bake.hcl \
+              tmccombs/hcl2json /tmp/docker-bake.hcl | \
+            docker run \
+              --rm -i \
+              ghcr.io/jqlang/jq:latest \
+              -r '.target.default[0].args | to_entries[] | "-e BAKE_\(.key)=\(.value)"'
+          )"
+          docker run \
+            --group-add 1001 \
+            -it \
+            --rm \
+            -e TERM \
+            -e LANG \
+            $BAKE_ENV \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v ./scripts.d/99-test.sh:/opt/test.sh:ro \
+            ${{ steps.meta.outputs.tags[0] }} \
+            /opt/test.sh
