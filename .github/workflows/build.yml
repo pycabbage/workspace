@@ -67,12 +67,10 @@ jobs:
       - name: Test image
         run: |
           BAKE_ENV="$(
-            docker run \
-              -it --rm \
+            docker run --rm \
               -v ./docker-bake.hcl:/tmp/docker-bake.hcl \
               tmccombs/hcl2json /tmp/docker-bake.hcl | \
-            docker run \
-              --rm -i \
+            docker run --rm \
               ghcr.io/jqlang/jq:latest \
               -r '.target.default[0].args | to_entries[] | "-e BAKE_\(.key)=\(.value)"'
           )"
