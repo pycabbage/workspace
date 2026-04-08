@@ -76,7 +76,6 @@ jobs:
           )"
           docker run \
             --group-add 1001 \
-            -it \
             --rm \
             -e TERM \
             -e LANG \
